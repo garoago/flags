@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"sort"
 	"strings"
 )
 
-var POP20_CC = strings.Split("CN IN US ID BR PK NG BD RU JP MX PH VN ET EG DE IR TR CD FR", " ")
+// country codes of the 20 most populous countries in 2014
+const POP20_CC = "CN IN US ID BR PK NG BD RU JP MX PH VN ET EG DE IR TR CD FR"
 
 const BASE_URL = "http://flupy.org/data/flags"
 
@@ -30,7 +32,9 @@ func get_flag(cc string) {
 }
 
 func main() {
-	for _, cc := range POP20_CC {
+	pop20_cc := strings.Split(POP20_CC, " ")
+	sort.Strings(pop20_cc)
+	for _, cc := range pop20_cc {
 		get_flag(cc)
 	}
 }
