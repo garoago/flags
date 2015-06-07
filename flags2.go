@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"sort"
 	"strings"
+	"time"
 )
 
 // country codes of the 20 most populous countries in 2014
@@ -35,14 +36,25 @@ func get_flag(cc string) {
 	check(err)
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	check(err)
 	fmt.Println(string(body[:6]), resp.ContentLength)
-	save_flag(body, fmt.Sprintf("%v.gif", cc))
+	return body
+}
+
+func download_many(cc_list []string) {
+	sort.Strings(cc_list)
+	for _, cc := range cc_list {
+		body := get_flag(cc)
+		save_flag(body, fmt.Sprintf("%v.gif", cc))
+	}
+	return len(cc_list)
 }
 
 func main() {
+	t0 := time.Now()
 	pop20_cc := strings.Split(POP20_CC, " ")
-	sort.Strings(pop20_cc)
-	for _, cc := range pop20_cc {
-		get_flag(cc)
-	}
+
+	count := download_many(pop20_cc)
+	elapsed := time.Since(t0)
+	fmt.Println(count, "flags downloaded in", elapsed)
 }
