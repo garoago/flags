@@ -46,13 +46,13 @@ func download_one(cc string, done chan<- string) {
 
 func download_many(cc_list []string) int {
 	sort.Strings(cc_list)
-	res := make(chan string)
+	results := make(chan string)
 	for _, cc := range cc_list {
-		go download_one(cc, res)
+		go download_one(cc, results)
 	}
 	count := 0
 	for range cc_list {
-		fmt.Print(<-res, " ")
+		fmt.Print(<-results, " ")
 		count++
 	}
 	return count
