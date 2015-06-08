@@ -24,7 +24,7 @@ func check(e error) {
 
 func save_flag(img []byte, filename string) {
 	path := fmt.Sprintf("%v%v", DEST_DIR, filename)
-	err := ioutil.WriteFile(path, img, 0666)
+	err := ioutil.WriteFile(path, img, 0660)
 	check(err)
 }
 
@@ -38,12 +38,16 @@ func get_flag(cc string) []byte {
 	return body
 }
 
+func download_one(cc string) {
+	image := get_flag(cc)
+	save_flag(image, fmt.Sprintf("%v.gif", strings.ToLower(cc)))
+}
+
 func download_many(cc_list []string) int {
 	sort.Strings(cc_list)
 	for _, cc := range cc_list {
-		image := get_flag(cc)
+		download_one(cc)
 		fmt.Print(cc, " ")
-		save_flag(image, fmt.Sprintf("%v.gif", strings.ToLower(cc)))
 	}
 	return len(cc_list)
 }
@@ -54,5 +58,4 @@ func main() {
 	elapsed := time.Since(t0)
 	msg := "\n%d flags downloaded in %.2fs\n"
 	fmt.Printf(msg, count, elapsed.Seconds())
-
 }

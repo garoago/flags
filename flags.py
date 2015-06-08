@@ -14,35 +14,35 @@ import os
 import time
 import sys
 
-import requests
+import requests  # <1>
 
 POP20_CC = ('CN IN US ID BR PK NG BD RU JP '
-            'MX PH VN ET EG DE IR TR CD FR').split()
+            'MX PH VN ET EG DE IR TR CD FR').split()  # <2>
 
-BASE_URL = 'http://flupy.org/data/flags'
+BASE_URL = 'http://flupy.org/data/flags'  # <3>
 
-DEST_DIR = 'downloads/'
+DEST_DIR = 'downloads/'  # <4>
 
 
-def save_flag(img, filename):
+def save_flag(img, filename):  # <5>
     path = os.path.join(DEST_DIR, filename)
     with open(path, 'wb') as fp:
         fp.write(img)
 
 
-def get_flag(cc):
+def get_flag(cc):  # <6>
     url = '{}/{cc}/{cc}.gif'.format(BASE_URL, cc=cc.lower())
     resp = requests.get(url)
     return resp.content
 
 
-def show(text):
+def show(text):  # <7>
     print(text, end=' ')
     sys.stdout.flush()
 
 
-def download_many(cc_list):
-    for cc in sorted(cc_list):
+def download_many(cc_list):  # <8>
+    for cc in sorted(cc_list):  # <9>
         image = get_flag(cc)
         show(cc)
         save_flag(image, cc.lower() + '.gif')
@@ -50,7 +50,7 @@ def download_many(cc_list):
     return len(cc_list)
 
 
-def main(download_many):
+def main(download_many):  # <10>
     t0 = time.time()
     count = download_many(POP20_CC)
     elapsed = time.time() - t0
@@ -59,4 +59,4 @@ def main(download_many):
 
 
 if __name__ == '__main__':
-    main(download_many)
+    main(download_many)  # <11>

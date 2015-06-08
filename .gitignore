@@ -25,3 +25,4 @@ _testmain.go
 
 # LR: flags project
 downloads/*.gif
+__pycache__/
