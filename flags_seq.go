@@ -1,3 +1,13 @@
+// Download flags of top 20 countries by population
+//
+// Sequential version with no error checking.
+//
+// Sample run:
+//
+//	$ go run flags_seq.go
+//	BD BR CD CN DE EG ET FR ID IN IR JP MX NG PH PK RU TR US VN
+//	20 flags downloaded in 3.86s
+
 package main
 
 import (
@@ -16,25 +26,16 @@ const BASE_URL = "http://flupy.org/data/flags"
 
 const DEST_DIR = "downloads/"
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func saveFlag(img []byte, filename string) {
 	path := fmt.Sprintf("%v%v", DEST_DIR, filename)
-	err := ioutil.WriteFile(path, img, 0660)
-	check(err)
+	ioutil.WriteFile(path, img, 0660)
 }
 
 func getFlag(cc string) []byte {
 	url := fmt.Sprintf("%[1]v/%[2]v/%[2]v.gif", BASE_URL, strings.ToLower(cc))
-	resp, err := http.Get(url)
-	check(err)
+	resp, _ := http.Get(url)
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	check(err)
+	body, _ := ioutil.ReadAll(resp.Body)
 	return body
 }
 

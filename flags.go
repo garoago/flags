@@ -1,3 +1,13 @@
+// Download flags of top 20 countries by population
+//
+// Concurrent version with no error checking.
+//
+// Sample run:
+//
+//	$ go run flags_seq.go
+//  FR RU JP DE BD NG EG TR CN BR IN PH VN CD IR ET MX PK US ID
+//	20 flags downloaded in 0.63s
+
 package main
 
 import (
