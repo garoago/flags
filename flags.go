@@ -16,45 +16,43 @@ const BASE_URL = "http://flupy.org/data/flags"
 
 const DEST_DIR = "downloads/"
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-func save_flag(img []byte, filename string) {
+func saveFlag(img []byte, filename string) {
 	path := fmt.Sprintf("%v%v", DEST_DIR, filename)
-	err := ioutil.WriteFile(path, img, 0660)
-	check(err)
+	ioutil.WriteFile(path, img, 0660)
 }
 
-func get_flag(cc string) []byte {
+func getFlag(cc string) []byte {
 	url := fmt.Sprintf("%[1]v/%[2]v/%[2]v.gif", BASE_URL, strings.ToLower(cc))
-	resp, err := http.Get(url)
-	check(err)
+	resp, _ := http.Get(url)
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	check(err)
+	body, _ := ioutil.ReadAll(resp.Body)
 	return body
 }
 
-func download_one(cc string) {
-	image := get_flag(cc)
-	save_flag(image, fmt.Sprintf("%v.gif", strings.ToLower(cc)))
+func downloadOne(cc string, done chan<- string) {
+	image := getFlag(cc)
+	saveFlag(image, fmt.Sprintf("%v.gif", strings.ToLower(cc)))
+	done <- cc
 }
 
-func download_many(cc_list []string) int {
-	sort.Strings(cc_list)
-	for _, cc := range cc_list {
-		download_one(cc)
-		fmt.Print(cc, " ")
+func DownloadMany(ccList []string) int {
+	sort.Strings(ccList) // for didatic reasons...
+	// ...to show that the results will not be in order
+	results := make(chan string)
+	for _, cc := range ccList {
+		go downloadOne(cc, results)
 	}
-	return len(cc_list)
+	count := 0
+	for range ccList {
+		fmt.Print(<-results, " ")
+		count++
+	}
+	return count
 }
 
 func main() {
 	t0 := time.Now()
-	count := download_many(strings.Split(POP20_CC, " "))
+	count := DownloadMany(strings.Split(POP20_CC, " "))
 	elapsed := time.Since(t0)
 	msg := "\n%d flags downloaded in %.2fs\n"
 	fmt.Printf(msg, count, elapsed.Seconds())
