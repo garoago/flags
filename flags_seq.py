@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Download flags of top 20 countries by population
 
 Sequential version
